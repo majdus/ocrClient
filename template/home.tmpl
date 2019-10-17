@@ -10,7 +10,7 @@
 
         <script>
             window.onload = function() {
-              if({{.ImgSrc}} != null) {
+              if(({{.ImgSrc}} != null) && ({{.ImgSrc}} != "")) {
                 document.getElementById("preview").style.display = "block";
               }
             };
@@ -23,12 +23,12 @@
 
 		<div class="form-group">
 			<label for="ImgPath">Image path</label>
-            <input type="file" class="btn btn-primary" id="ImgPath" name="ImgPath" />
-
+            <input type="file" class="dropzone" id="ImgPath" name="ImgPath" />
+<!--
             <div id="preview" class="style-scope vs-app" style="display:none">
                 <img id="image" class="style-scope vs-image" src={{.ImgSrc}} style="width: 450px; height: 450px;">
             </div>
-
+-->
             <!-- <input type="hidden" id="Image" name="Image" value="{{.Image}}"> -->
             <script>
                 function handleFileSelect(evt) {
@@ -72,6 +72,7 @@
             </script>
 		</div>
 
+<!--
         <label>Language</label>
         <select class="form-control" id="Language" data-stripe="exp_year" name="Language">
             {{$language := .Language}}
@@ -83,7 +84,7 @@
                 {{ end }}
             {{ end }}
         </select>
-
+-->
         </p>
 
 		<input type="submit" class="btn btn-primary" value="Send" class="button" />

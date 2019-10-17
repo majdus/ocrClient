@@ -23,3 +23,13 @@ func ToBase64FromFile (file multipart.File) (string) {
 
 	return base64.StdEncoding.EncodeToString(byteArray.Bytes())
 }
+
+func ToStringFromFile (file multipart.File) (string) {
+
+	byteArray := bytes.NewBuffer(nil)
+	if _, err := io.Copy(byteArray, file); err != nil {
+		log.Println(err)
+	}
+
+	return byteArray.String()
+}

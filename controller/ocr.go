@@ -1,8 +1,13 @@
 package controller
 
 import (
+	"cloud.google.com/go/vision/apiv1"
+	"context"
 	"encoding/json"
 	"errors"
+	"strings"
+
+	pb "google.golang.org/genproto/googleapis/cloud/vision/v1"
 )
 
 type OcrRequestImg struct {
@@ -19,6 +24,35 @@ type OcrRequestUrl struct {
 	EngineArgs struct {
 		Lang string `json:"lang"`
 	} `json:"engine_args"`
+}
+
+func GetUsingGVA(inputType string, image string) string {
+	ctx := context.Background()
+
+	// Creates a client.
+	VisionClient, err := vision.NewImageAnnotatorClient(ctx)
+	if err != nil {
+		return err.Error()
+	}
+
+	var vImage *pb.Image
+	if inputType == "url" {
+		vImage = vision.NewImageFromURI(image)
+	} else if inputType == "img" {
+		reader := strings.NewReader(image)
+		vImage, _ = vision.NewImageFromReader(reader)
+	}
+
+	if vImage != nil {
+		text, err := VisionClient.DetectDocumentText(ctx, vImage, nil)
+		if err != nil {
+			return err.Error()
+		}
+
+		return text.GetText()
+	}
+
+	return "Cannot read image"
 }
 
 func Get(inputType string, image string, lang string) (string) {

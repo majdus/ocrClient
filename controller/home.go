@@ -46,6 +46,7 @@ func HomePOST(w http.ResponseWriter, r *http.Request) {
 	var header * multipart.FileHeader
 	var err error
 	image := ""
+	imageTodisplay := ""
 
 	if imgUrl == "" {
 		file, header, err = r.FormFile("ImgPath")
@@ -57,7 +58,8 @@ func HomePOST(w http.ResponseWriter, r *http.Request) {
 		}
 		defer file.Close()
 		log.Println(header.Filename)
-		image = ToBase64FromFile(file)
+		//imageTodisplay = ToBase64FromFile(file) // for tesseract
+		image = ToStringFromFile(file) // for google api vision
 		ocrFile = true
 	} else {
 		resp, _ := http.Get(imgUrl)
@@ -77,9 +79,11 @@ func HomePOST(w http.ResponseWriter, r *http.Request) {
 	var result string
 
 	if ocrFile {
-		result = Get("img", image, language)
+		result = GetUsingGVA("img", image)
+		//result = Get("img", image, language)
 	} else {
-		result = Get("url", imgUrl, language)
+		result = GetUsingGVA("url", imgUrl)
+		//result = Get("url", imgUrl, language)
 	}
 
 	fmt.Println(result)
@@ -88,7 +92,7 @@ func HomePOST(w http.ResponseWriter, r *http.Request) {
 	r.Form.Add("ImgURL", imgUrl)
 	if ocrFile {
 		r.Form.Add("ImgPath", header.Filename)
-		r.Form.Add("ImgSrc", image)
+		r.Form.Add("ImgSrc", imageTodisplay)
 		r.Form.Add("ImgType", header.Header.Get("Content-Type"))
 	}
 
