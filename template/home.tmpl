@@ -1,0 +1,115 @@
+{{define "title"}}Home{{end}}
+{{define "head"}}{{end}}
+{{define "content"}}
+
+<div class="container">
+    <div class="page-header">
+		<h1>{{template "title" .}}</h1>
+	</div>
+	<form enctype="multipart/form-data" method="post">
+
+        <script>
+            window.onload = function() {
+              if({{.ImgSrc}} != null) {
+                document.getElementById("preview").style.display = "block";
+              }
+            };
+        </script>
+
+		<div class="form-group">
+			<label for="ImgURL">Image URL</label>
+			<div><input type="text" class="form-control" id="ImgURL" name="ImgURL" maxlength="512" placeholder="ImgURL" value="{{.ImgURL}}" /></div>
+		</div>
+
+		<div class="form-group">
+			<label for="ImgPath">Image path</label>
+            <input type="file" class="btn btn-primary" id="ImgPath" name="ImgPath" />
+
+            <div id="preview" class="style-scope vs-app" style="display:none">
+                <img id="image" class="style-scope vs-image" src={{.ImgSrc}} style="width: 450px; height: 450px;">
+            </div>
+
+            <!-- <input type="hidden" id="Image" name="Image" value="{{.Image}}"> -->
+            <script>
+                function handleFileSelect(evt) {
+                    document.getElementById('ImgURL').value = ""
+                    var files = evt.target.files; // FileList object
+                    var file = files[0]
+                    if (f.type.match('image.*')) {
+                        var reader = new FileReader();
+                        reader.onload = (function(theFile) {
+                        return function(e) {
+                           // Render thumbnail.
+                        };
+                        })(f);
+                        document.getElementById('image').value = f
+                        reader.readAsDataURL(f);
+                    }
+
+                    // Loop through the FileList and render image files as thumbnails.
+//                    for (var i = 0, f; f = files[i]; i++) {
+//                       // Only process image files.
+//                        if (!f.type.match('image.*')) {
+//                            continue;
+//                        }
+//                        var reader = new FileReader();
+                        // Closure to capture the file information.
+//                        reader.onload = (function(theFile) {
+//                        return function(e) {
+//                           // Render thumbnail.
+//                            var span = document.createElement('span');
+//                            span.innerHTML = ['<img class="thumb" src="', e.target.result,
+//                            '" title="', escape(theFile.name), '"/>'].join('');
+//                            document.getElementById('list').insertBefore(span, null);
+//                        };
+//                        })(f);
+                        //document.getElementById('Image').value = f
+                        // Read in the image file as a data URL.
+//                        reader.readAsDataURL(f);
+//                    }
+                }
+                document.getElementById('ImgPath').addEventListener('change', handleFileSelect, false);
+            </script>
+		</div>
+
+        <label>Language</label>
+        <select class="form-control" id="Language" data-stripe="exp_year" name="Language">
+            {{$language := .Language}}
+            {{ range $l := .Languages }}
+                {{ if eq $l $language }}
+                    <option value="{{ $l }}" selected>{{ $l }}</option>
+                {{ else }}
+                    <option value="{{ $l }}">{{ $l }}</option>
+                {{ end }}
+            {{ end }}
+        </select>
+
+        </p>
+
+		<input type="submit" class="btn btn-primary" value="Send" class="button" />
+
+        </p>
+
+        <div class="panel panel-info">
+            <div class="panel-heading" >
+                <label for="OcrResult" placeholder="OcrResult">Ocr result</label>
+            </div>
+            {{ if eq .Language "ara" }}
+                <div class="panel-body" id="OcrResult" name="OcrResult" dir="rtl">
+                    {{.OcrResult}}
+                </div>
+            {{ else }}
+                <div class="panel-body" id="OcrResult" name="OcrResult">
+                    {{.OcrResult}}
+                </div>
+            {{ end }}
+        </div>
+
+		<input type="hidden" name="token" value="{{.token}}">
+	</form>
+	
+	{{template "footer" .}}
+</div>
+
+{{end}}
+{{define "foot"}}{{end}}
